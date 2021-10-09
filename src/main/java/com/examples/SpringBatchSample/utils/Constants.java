@@ -1,4 +1,4 @@
-package com.example.SpringBatchSample.utils;
+package com.examples.SpringBatchSample.utils;
 
 public class Constants {
 

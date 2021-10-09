@@ -1,26 +1,24 @@
-package com.example.SpringBatchSample.controller;
+package com.examples.SpringBatchSample.controller;
 
-import com.example.SpringBatchSample.runner.JobRunner;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.examples.SpringBatchSample.runner.JobRunner;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/*url: http://localhost:8080/run/job*/
+/*url: http://localhost:8080/run/employee*/
 
 @RestController
 @RequestMapping("/run")
 public class JobController {
 
-    private JobRunner jobRunner;
+    private final JobRunner jobRunner;
 
-    @Autowired
     public JobController(JobRunner jobRunner) {
         this.jobRunner = jobRunner;
     }
 
-    @RequestMapping(value = "/job")
+    @RequestMapping(value = "/employee")
     public String runJob() {
         jobRunner.runBatchJob();
-        return String.format("Job Demo1 submitted successfully.");
+        return "Job Employee From CSV To Database submitted successfully.";
     }
 }

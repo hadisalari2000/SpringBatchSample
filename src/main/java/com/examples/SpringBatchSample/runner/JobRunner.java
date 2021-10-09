@@ -1,6 +1,6 @@
-package com.example.SpringBatchSample.runner;
+package com.examples.SpringBatchSample.runner;
 
-import com.example.SpringBatchSample.utils.Constants;
+import com.examples.SpringBatchSample.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.*;
@@ -8,7 +8,6 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -20,13 +19,12 @@ public class JobRunner {
     private static final Logger logger = LoggerFactory.getLogger(JobRunner.class);
 
 
-    private JobLauncher simpleJobLauncher;
-    private Job demo1;
+    private final JobLauncher simpleJobLauncher;
+    private final Job job;
 
-    @Autowired
-    public JobRunner(Job demo1, JobLauncher jobLauncher) {
+    public JobRunner(Job job, JobLauncher jobLauncher) {
         this.simpleJobLauncher = jobLauncher;
-        this.demo1 = demo1;
+        this.job = job;
     }
 
 
@@ -35,7 +33,7 @@ public class JobRunner {
         JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
         jobParametersBuilder.addString(Constants.FILE_NAME_CONTEXT_KEY, "employees.csv");
         jobParametersBuilder.addDate("date", new Date(), true);
-        runJob(demo1, jobParametersBuilder.toJobParameters());
+        runJob(job, jobParametersBuilder.toJobParameters());
     }
 
 

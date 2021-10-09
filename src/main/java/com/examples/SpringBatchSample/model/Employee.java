@@ -1,4 +1,4 @@
-package com.example.SpringBatchSample.model;
+package com.examples.SpringBatchSample.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

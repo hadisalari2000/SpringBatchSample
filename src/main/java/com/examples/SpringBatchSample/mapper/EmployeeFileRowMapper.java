@@ -1,6 +1,6 @@
-package com.example.SpringBatchSample.mapper;
+package com.examples.SpringBatchSample.mapper;
 
-import com.example.SpringBatchSample.dto.EmployeeDTO;
+import com.examples.SpringBatchSample.dto.EmployeeDTO;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.FieldSet;
 

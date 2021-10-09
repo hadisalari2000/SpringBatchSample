@@ -1,9 +1,9 @@
-package com.example.SpringBatchSample.job;
+package com.examples.SpringBatchSample.job;
 
-import com.example.SpringBatchSample.dto.EmployeeDTO;
-import com.example.SpringBatchSample.mapper.EmployeeFileRowMapper;
-import com.example.SpringBatchSample.model.Employee;
-import com.example.SpringBatchSample.processor.EmployeeProcessor;
+import com.examples.SpringBatchSample.dto.EmployeeDTO;
+import com.examples.SpringBatchSample.mapper.EmployeeFileRowMapper;
+import com.examples.SpringBatchSample.model.Employee;
+import com.examples.SpringBatchSample.processor.EmployeeProcessor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -14,7 +14,6 @@ import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,32 +24,31 @@ import org.springframework.core.io.Resource;
 import javax.sql.DataSource;
 
 @Configuration
-public class Demo1 {
+public class EmployeeFromCSVToDataBase {
 
-    private JobBuilderFactory jobBuilderFactory;
-    private StepBuilderFactory stepBuilderFactory;
-    private EmployeeProcessor employeeProcessor;
-    private DataSource dataSource;
+    private final JobBuilderFactory jobBuilderFactory;
+    private final StepBuilderFactory stepBuilderFactory;
+    private final EmployeeProcessor employeeProcessor;
+    private final DataSource dataSource;
 
-    @Autowired
-    public Demo1(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, EmployeeProcessor employeeProcessor, DataSource dataSource){
+    public EmployeeFromCSVToDataBase(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, EmployeeProcessor employeeProcessor, DataSource dataSource){
         this.jobBuilderFactory = jobBuilderFactory;
         this.stepBuilderFactory = stepBuilderFactory;
         this.employeeProcessor = employeeProcessor;
         this.dataSource = dataSource;
     }
 
-    @Qualifier(value = "demo1")
+    @Qualifier(value = "employeeFromCSVToDataBase")
     @Bean
-    public Job demo1Job() throws Exception {
-        return this.jobBuilderFactory.get("demo1")
-                .start(step1Demo1())
+    public Job employeeJob() throws Exception {
+        return this.jobBuilderFactory.get("employeeFromCSVToDataBase")
+                .start(startStep())
                 .build();
     }
 
     @Bean
-    public Step step1Demo1() throws Exception {
-        return this.stepBuilderFactory.get("step1")
+    public Step startStep() throws Exception {
+        return this.stepBuilderFactory.get("startStep")
                 .<EmployeeDTO, Employee>chunk(1000)
                 .reader(employeeReader())
                 .processor(employeeProcessor)
@@ -60,7 +58,7 @@ public class Demo1 {
 
     @Bean
     @StepScope
-    Resource inputFileResource(@Value("#{jobParameters[fileName]}") final String fileName) throws Exception {
+    Resource inputFileResource(@Value("#{jobParameters[fileName]}") final String fileName) {
         return new ClassPathResource(fileName);
     }
 

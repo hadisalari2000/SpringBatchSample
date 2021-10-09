@@ -1,7 +1,7 @@
-package com.example.SpringBatchSample.processor;
+package com.examples.SpringBatchSample.processor;
 
-import com.example.SpringBatchSample.dto.EmployeeDTO;
-import com.example.SpringBatchSample.model.Employee;
+import com.examples.SpringBatchSample.dto.EmployeeDTO;
+import com.examples.SpringBatchSample.model.Employee;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class EmployeeProcessor implements ItemProcessor<EmployeeDTO, Employee> {
 
     @Override
-    public Employee process(EmployeeDTO employeeDTO) throws Exception {
+    public Employee process(EmployeeDTO employeeDTO) {
         String calculateAge1=calculateAge1(employeeDTO.getAge());
         String calculateAge2=calculateAge2(calculateAge1,employeeDTO);
         Employee employee =Employee.builder()

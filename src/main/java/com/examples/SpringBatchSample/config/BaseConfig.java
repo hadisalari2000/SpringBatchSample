@@ -1,4 +1,4 @@
-package com.example.SpringBatchSample.config;
+package com.examples.SpringBatchSample.config;
 
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.SimpleJobLauncher;
