@@ -4,13 +4,12 @@ import com.examples.SpringBatchSample.dto.EmployeeDTO;
 import com.examples.SpringBatchSample.mapper.EmployeeFileRowMapper;
 import com.examples.SpringBatchSample.model.Employee;
 import com.examples.SpringBatchSample.processor.EmployeeProcessor;
+import com.examples.SpringBatchSample.writer.EmployeeDBWriter;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
-import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
@@ -30,12 +29,14 @@ public class EmployeeFromCSVToDataBase {
     private final StepBuilderFactory stepBuilderFactory;
     private final EmployeeProcessor employeeProcessor;
     private final DataSource dataSource;
+    private final EmployeeDBWriter employeeDBWriter;
 
-    public EmployeeFromCSVToDataBase(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, EmployeeProcessor employeeProcessor, DataSource dataSource){
+    public EmployeeFromCSVToDataBase(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, EmployeeProcessor employeeProcessor, DataSource dataSource, EmployeeDBWriter employeeDBWriter){
         this.jobBuilderFactory = jobBuilderFactory;
         this.stepBuilderFactory = stepBuilderFactory;
         this.employeeProcessor = employeeProcessor;
         this.dataSource = dataSource;
+        this.employeeDBWriter = employeeDBWriter;
     }
 
     @Qualifier(value = "employeeFromCSVToDataBase")
@@ -52,7 +53,7 @@ public class EmployeeFromCSVToDataBase {
                 .<EmployeeDTO, Employee>chunk(1000)
                 .reader(employeeReader())
                 .processor(employeeProcessor)
-                .writer(employeeDBWriterDefault())
+                .writer(employeeDBWriter)
                 .build();
     }
 
@@ -77,7 +78,8 @@ public class EmployeeFromCSVToDataBase {
         return reader;
     }
 
-    @Bean
+    /******************** Insert use jdbc and Datasource ******************************************/
+    /*@Bean
     public JdbcBatchItemWriter<Employee> employeeDBWriterDefault() {
         JdbcBatchItemWriter<Employee> itemWriter = new JdbcBatchItemWriter<Employee>();
         itemWriter.setDataSource(dataSource);
@@ -85,6 +87,7 @@ public class EmployeeFromCSVToDataBase {
                 "values (:employeeId, :fullName, :email, :age , :calculateAge1 , :calculateAge2)");
         itemWriter.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<Employee>());
         return itemWriter;
-    }
+    }*/
+    /***********************************************************************************************/
 
 }

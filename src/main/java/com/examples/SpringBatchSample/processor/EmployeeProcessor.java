@@ -10,6 +10,9 @@ public class EmployeeProcessor implements ItemProcessor<EmployeeDTO, Employee> {
 
     @Override
     public Employee process(EmployeeDTO employeeDTO) {
+        if(!ageIsValid(employeeDTO))
+            return null;
+
         String calculateAge1=calculateAge1(employeeDTO.getAge());
         String calculateAge2=calculateAge2(calculateAge1,employeeDTO);
         Employee employee =Employee.builder()
@@ -24,6 +27,9 @@ public class EmployeeProcessor implements ItemProcessor<EmployeeDTO, Employee> {
         return employee;
     }
 
+    private Boolean ageIsValid(EmployeeDTO employeeDTO){
+        return employeeDTO.getAge() > 0;
+    }
     private String calculateAge1(Integer age) {
         if(age/10<=1)
             return (age*1000)+"-"+age+"-0"+(age%10);
