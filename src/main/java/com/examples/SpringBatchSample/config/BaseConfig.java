@@ -3,6 +3,7 @@ package com.examples.SpringBatchSample.config;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,9 +13,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 public class BaseConfig {
 
-    public JobRepository jobRepository;
+    public final JobRepository jobRepository;
 
-    @Autowired
     public BaseConfig(JobRepository jobRepository) {
         this.jobRepository = jobRepository;
     }
@@ -26,5 +26,8 @@ public class BaseConfig {
         return jobLauncher;
     }
 
-
+    @Bean
+    public ExecutionContext executionContext(){
+        return new ExecutionContext();
+    }
 }

@@ -1,3 +1,4 @@
+/*
 package com.examples.SpringBatchSample.job;
 
 import com.examples.SpringBatchSample.dto.EmployeeDTO;
@@ -88,8 +89,12 @@ public class EmployeeFromCSVToDataBase {
         return taskExecutor;
     }
 
-    /******************** Insert use jdbc and Datasource ******************************************/
-    /*@Bean
+
+    */
+/******************** Insert use jdbc and Datasource ******************************************//*
+
+    */
+/*@Bean
     public JdbcBatchItemWriter<Employee> employeeDBWriterDefault() {
         JdbcBatchItemWriter<Employee> itemWriter = new JdbcBatchItemWriter<Employee>();
         itemWriter.setDataSource(dataSource);
@@ -97,7 +102,11 @@ public class EmployeeFromCSVToDataBase {
                 "values (:employeeId, :fullName, :email, :age , :calculateAge1 , :calculateAge2)");
         itemWriter.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<Employee>());
         return itemWriter;
-    }*/
-    /***********************************************************************************************/
+    }*//*
+
+    */
+/***********************************************************************************************//*
+
 
 }
+*/

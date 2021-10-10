@@ -6,20 +6,17 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EmployeeProcessor implements ItemProcessor<EmployeeDTO, Employee> {
+public class EmployeeProcessorV2 implements ItemProcessor<EmployeeDTO, Employee> {
 
     @Override
     public Employee process(EmployeeDTO dto) {
-        if(!ageIsValid(dto))
-            return null;
-
-        String calculateAge1=calculateAge1(dto.getAge());
-        String calculateAge2=calculateAge2(calculateAge1,dto);
+        String calculateAge1=!ageIsValid(dto)?"0":calculateAge1(dto.getAge());
+        String calculateAge2=!ageIsValid(dto)?"0":calculateAge2(calculateAge1,dto);
         Employee employee =Employee.builder()
                 .employeeId(dto.getEmployeeId())
                 .fullName(dto.getFirstName() + " - " + dto.getLastName())
                 .email(dto.getEmail())
-                .age(dto.getAge())
+                .age(!ageIsValid(dto)?0:dto.getAge())
                 .calculateAge1(calculateAge1)
                 .calculateAge2(calculateAge2)
                 .build();

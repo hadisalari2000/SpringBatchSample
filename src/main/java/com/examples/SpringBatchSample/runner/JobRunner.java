@@ -8,6 +8,7 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -21,10 +22,12 @@ public class JobRunner {
 
     private final JobLauncher simpleJobLauncher;
     private final Job job;
+    private final ExecutionContext executionContext;
 
-    public JobRunner(Job job, JobLauncher jobLauncher) {
+    public JobRunner(Job job, JobLauncher jobLauncher, ExecutionContext executionContext) {
         this.simpleJobLauncher = jobLauncher;
         this.job = job;
+        this.executionContext = executionContext;
     }
 
 
@@ -32,6 +35,7 @@ public class JobRunner {
     public void runBatchJob() {
         JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
         jobParametersBuilder.addString(Constants.FILE_NAME_CONTEXT_KEY, "employees.csv");
+        executionContext.put(Constants.FILE_NAME_CONTEXT_KEY, "employees.csv");
         jobParametersBuilder.addDate("date", new Date(), true);
         runJob(job, jobParametersBuilder.toJobParameters());
     }
