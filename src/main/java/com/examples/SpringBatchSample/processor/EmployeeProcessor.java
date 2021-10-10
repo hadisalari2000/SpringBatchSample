@@ -30,6 +30,7 @@ public class EmployeeProcessor implements ItemProcessor<EmployeeDTO, Employee> {
     private Boolean ageIsValid(EmployeeDTO employeeDTO){
         return employeeDTO.getAge() > 0;
     }
+
     private String calculateAge1(Integer age) {
         if(age/10<=1)
             return (age*1000)+"-"+age+"-0"+(age%10);
