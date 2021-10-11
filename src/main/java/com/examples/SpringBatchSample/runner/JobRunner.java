@@ -19,7 +19,6 @@ public class JobRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(JobRunner.class);
 
-
     private final JobLauncher simpleJobLauncher;
     private final Job job;
     private final ExecutionContext executionContext;
@@ -30,16 +29,14 @@ public class JobRunner {
         this.executionContext = executionContext;
     }
 
-
     @Async
     public void runBatchJob() {
         JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
-        jobParametersBuilder.addString(Constants.FILE_NAME_CONTEXT_KEY, "employees.csv");
-        executionContext.put(Constants.FILE_NAME_CONTEXT_KEY, "employees.csv");
+        jobParametersBuilder.addString(Constants.FILE_NAME_CONTEXT_KEY, "sampleData/accounts.csv");
+        executionContext.put(Constants.FILE_NAME_CONTEXT_KEY, "sampleData/employees.csv");
         jobParametersBuilder.addDate("date", new Date(), true);
         runJob(job, jobParametersBuilder.toJobParameters());
     }
-
 
     public void runJob(Job job, JobParameters parameters) {
         try {
@@ -54,6 +51,4 @@ public class JobRunner {
             logger.info("Invalid job parameters.", parameters.getParameters().get(Constants.FILE_NAME_CONTEXT_KEY));
         }
     }
-
-
 }

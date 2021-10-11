@@ -1,28 +1,24 @@
 /*
+
 package com.examples.SpringBatchSample.job;
 
 import com.examples.SpringBatchSample.dto.EmployeeDTO;
-import com.examples.SpringBatchSample.mapper.EmployeeDBRowMapper;
-import com.examples.SpringBatchSample.model.Employee;
+import com.examples.SpringBatchSample.model.mapper.EmployeeDBRowMapper;
+import com.examples.SpringBatchSample.model.entity.Employee;
 import com.examples.SpringBatchSample.processor.EmployeeProcessor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
-import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 

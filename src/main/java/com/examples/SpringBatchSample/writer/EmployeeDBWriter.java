@@ -1,6 +1,6 @@
 package com.examples.SpringBatchSample.writer;
 
-import com.examples.SpringBatchSample.model.Employee;
+import com.examples.SpringBatchSample.model.entity.Employee;
 import com.examples.SpringBatchSample.repo.EmployeeRepo;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;

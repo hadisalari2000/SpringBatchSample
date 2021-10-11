@@ -1,6 +1,6 @@
-package com.examples.SpringBatchSample.mapper;
+package com.examples.SpringBatchSample.model.mapper;
 
-import com.examples.SpringBatchSample.model.Employee;
+import com.examples.SpringBatchSample.model.entity.Employee;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 

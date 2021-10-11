@@ -1,12 +1,12 @@
+/*
 package com.examples.SpringBatchSample.job;
 
 import com.examples.SpringBatchSample.dto.EmployeeDTO;
-import com.examples.SpringBatchSample.mapper.EmployeeDBRowMapper;
-import com.examples.SpringBatchSample.mapper.EmployeeFileRowMapper;
-import com.examples.SpringBatchSample.model.Employee;
+import com.examples.SpringBatchSample.model.mapper.EmployeeDBRowMapper;
+import com.examples.SpringBatchSample.model.mapper.EmployeeFileRowMapper;
+import com.examples.SpringBatchSample.model.entity.Employee;
 import com.examples.SpringBatchSample.processor.EmployeeDTOProcessor;
 import com.examples.SpringBatchSample.processor.EmployeeProcessorV2;
-import com.examples.SpringBatchSample.utils.Constants;
 import com.examples.SpringBatchSample.writer.EmailSenderWriter;
 import com.examples.SpringBatchSample.writer.EmployeeDBWriter;
 import org.springframework.batch.core.Job;
@@ -39,7 +39,6 @@ import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Configuration
 public class MultipleStepsJob {
@@ -72,15 +71,21 @@ public class MultipleStepsJob {
         return new ClassPathResource(fileName);
     }
 
-    /********************** Read context Variable by Execution Context ********************************/
-    /*@Bean
+    */
+/********************** Read context Variable by Execution Context ********************************//*
+
+    */
+/*@Bean
     @StepScope
     Resource newInputResource() {
         return new ClassPathResource(
                 Objects.requireNonNull(executionContext.get(Constants.FILE_NAME_CONTEXT_KEY)).toString()
         );
-    }*/
-    /*************************************************************************************************/
+    }*//*
+
+    */
+/*************************************************************************************************//*
+
 
     @Qualifier(value = "multipleStepJob")
     @Bean
@@ -98,6 +103,7 @@ public class MultipleStepsJob {
                 .reader(employeeFileReader())
                 .processor(employeeProcessorV2)
                 .writer(employeeDBWriter)
+                //.faultTolerant().skipPolicy(skipPolicy())
                 .taskExecutor(taskExecutor())
                 .build();
     }
@@ -115,6 +121,7 @@ public class MultipleStepsJob {
                 .reader(employeeDBReader())
                 .processor(employeeDTOProcessor)
                 .writer(compositeItemWriter)
+                //.faultTolerant().skipPolicy(skipPolicy())
                 .build();
     }
 
@@ -165,4 +172,12 @@ public class MultipleStepsJob {
         executor.setConcurrencyLimit(1000);
         return executor;
     }
+
+    */
+/*@Bean
+    public JobSkipPolicy skipPolicy(){
+        return new JobSkipPolicy();
+    }*//*
+
 }
+*/

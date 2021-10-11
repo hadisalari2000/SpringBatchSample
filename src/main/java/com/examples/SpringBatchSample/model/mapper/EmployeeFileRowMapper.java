@@ -1,8 +1,9 @@
-package com.examples.SpringBatchSample.mapper;
+package com.examples.SpringBatchSample.model.mapper;
 
 import com.examples.SpringBatchSample.dto.EmployeeDTO;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.FieldSet;
+import org.springframework.stereotype.Component;
 
 public class EmployeeFileRowMapper implements FieldSetMapper<EmployeeDTO> {
 

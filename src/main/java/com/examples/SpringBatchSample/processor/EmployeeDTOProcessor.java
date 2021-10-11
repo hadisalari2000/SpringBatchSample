@@ -1,7 +1,7 @@
 package com.examples.SpringBatchSample.processor;
 
 import com.examples.SpringBatchSample.dto.EmployeeDTO;
-import com.examples.SpringBatchSample.model.Employee;
+import com.examples.SpringBatchSample.model.entity.Employee;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 

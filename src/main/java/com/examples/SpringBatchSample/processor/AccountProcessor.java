@@ -1,15 +1,17 @@
 package com.examples.SpringBatchSample.processor;
 
+import com.examples.SpringBatchSample.dto.AccountDTO;
 import com.examples.SpringBatchSample.dto.EmployeeDTO;
+import com.examples.SpringBatchSample.model.entity.Account;
 import com.examples.SpringBatchSample.model.entity.Employee;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EmployeeProcessor implements ItemProcessor<EmployeeDTO, Employee> {
+public class AccountProcessor implements ItemProcessor<AccountDTO, Account> {
 
     @Override
-    public Employee process(EmployeeDTO dto) {
+    public Account process(AccountDTO dto) {
         if(!ageIsValid(dto))
             return null;
 
