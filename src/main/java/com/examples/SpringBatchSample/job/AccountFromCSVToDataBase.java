@@ -65,7 +65,7 @@ public class AccountFromCSVToDataBase {
     @Bean
     public Step createAccountStep() throws Exception {
         return this.stepBuilderFactory.get("createAccountStep")
-                .<AccountDTO, Account>chunk(1000)
+                .<AccountDTO, Account>chunk(500)
                 .reader(accountReader())
                 .processor(accountProcessor)
                 .writer(accountDBWriter)
@@ -76,7 +76,7 @@ public class AccountFromCSVToDataBase {
     @Bean
     public Step createAccountTransactionStep() throws Exception {
         return this.stepBuilderFactory.get("createAccountTransactionStep")
-                .<Account, List<AccountTransaction>>chunk(1000)
+                .<Account, List<AccountTransaction>>chunk(500)
                 .reader(accountDBReader())
                 .processor(accountTransactionProcessor)
                 .writer(accountTransactionDBWriter)
@@ -107,7 +107,7 @@ public class AccountFromCSVToDataBase {
     @Bean
     public TaskExecutor taskExecutor() {
         SimpleAsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor();
-        taskExecutor.setConcurrencyLimit(1000);
+        taskExecutor.setConcurrencyLimit(500);
         return taskExecutor;
     }
 
