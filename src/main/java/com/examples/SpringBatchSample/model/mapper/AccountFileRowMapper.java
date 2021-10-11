@@ -11,7 +11,7 @@ public class AccountFileRowMapper implements FieldSetMapper<AccountDTO> {
         return AccountDTO.builder()
                 .part1(fieldSet.readString("part1"))
                 .part2(fieldSet.readString("part2"))
-                .part4(fieldSet.readString("part3"))
+                .part4(fieldSet.readString("part4"))
                 .build();
     }
 

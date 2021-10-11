@@ -1,9 +1,11 @@
 package com.examples.SpringBatchSample.model.entity;
 
+import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 
+@Data
 @SuperBuilder
 @MappedSuperclass
 public abstract class BaseEntity<T extends Number>{

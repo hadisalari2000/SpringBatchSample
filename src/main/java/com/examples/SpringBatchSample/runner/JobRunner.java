@@ -34,6 +34,7 @@ public class JobRunner {
         JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
         jobParametersBuilder.addString(Constants.FILE_NAME_CONTEXT_KEY, "sampleData/accounts.csv");
         executionContext.put(Constants.FILE_NAME_CONTEXT_KEY, "sampleData/employees.csv");
+        executionContext.putLong(Constants.COUNTER, 1);
         jobParametersBuilder.addDate("date", new Date(), true);
         runJob(job, jobParametersBuilder.toJobParameters());
     }

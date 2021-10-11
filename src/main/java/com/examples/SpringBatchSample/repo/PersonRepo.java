@@ -1,11 +1,11 @@
 package com.examples.SpringBatchSample.repo;
 
-import com.examples.SpringBatchSample.model.entity.Account;
+import com.examples.SpringBatchSample.model.entity.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AccountRepo extends JpaRepository<Account, Long> {
+public interface PersonRepo extends JpaRepository<Person, Long> {
 
-    public Account getAccountById(Long id);
+    public Person findPersonById(Long id);
 }

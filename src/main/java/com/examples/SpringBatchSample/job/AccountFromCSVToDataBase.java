@@ -2,14 +2,20 @@ package com.examples.SpringBatchSample.job;
 
 import com.examples.SpringBatchSample.dto.AccountDTO;
 import com.examples.SpringBatchSample.model.entity.Account;
+import com.examples.SpringBatchSample.model.entity.AccountTransaction;
+import com.examples.SpringBatchSample.model.mapper.AccountDBRowMapper;
 import com.examples.SpringBatchSample.model.mapper.AccountFileRowMapper;
 import com.examples.SpringBatchSample.processor.AccountProcessor;
+import com.examples.SpringBatchSample.processor.AccountTransactionProcessor;
 import com.examples.SpringBatchSample.writer.AccountDBWriter;
+import com.examples.SpringBatchSample.writer.AccountTransactionDBWriter;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.item.ItemStreamReader;
+import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
@@ -23,6 +29,8 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 
 import javax.sql.DataSource;
+import java.util.List;
+
 
 @Configuration
 public class AccountFromCSVToDataBase {
@@ -30,33 +38,48 @@ public class AccountFromCSVToDataBase {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final AccountProcessor accountProcessor;
-    private final DataSource dataSource;
+    private final AccountTransactionProcessor accountTransactionProcessor;
     private final AccountDBWriter accountDBWriter;
+    private final AccountTransactionDBWriter accountTransactionDBWriter;
+    private final DataSource dataSource;
 
-    public AccountFromCSVToDataBase(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, AccountProcessor accountProcessor, DataSource dataSource, AccountDBWriter accountDBWriter) {
+    public AccountFromCSVToDataBase(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, AccountProcessor accountProcessor, AccountTransactionProcessor accountTransactionProcessor, AccountDBWriter accountDBWriter, AccountTransactionDBWriter accountTransactionDBWriter, DataSource dataSource) {
         this.jobBuilderFactory = jobBuilderFactory;
         this.stepBuilderFactory = stepBuilderFactory;
         this.accountProcessor = accountProcessor;
-        this.dataSource = dataSource;
+        this.accountTransactionProcessor = accountTransactionProcessor;
         this.accountDBWriter = accountDBWriter;
+        this.accountTransactionDBWriter = accountTransactionDBWriter;
+        this.dataSource = dataSource;
     }
 
     @Qualifier(value = "employeeFromCSVToDataBase")
     @Bean
     public Job employeeJob() throws Exception {
         return this.jobBuilderFactory.get("employeeFromCSVToDataBase")
-                .start(startStep())
+                .start(createAccountStep())
+                .next(createAccountTransactionStep())
                 .build();
     }
 
     @Bean
-    public Step startStep() throws Exception {
-        return this.stepBuilderFactory.get("startStep")
+    public Step createAccountStep() throws Exception {
+        return this.stepBuilderFactory.get("createAccountStep")
                 .<AccountDTO, Account>chunk(1000)
                 .reader(accountReader())
                 .processor(accountProcessor)
                 .writer(accountDBWriter)
                 .taskExecutor(taskExecutor())
+                .build();
+    }
+
+    @Bean
+    public Step createAccountTransactionStep() throws Exception {
+        return this.stepBuilderFactory.get("createAccountTransactionStep")
+                .<Account, List<AccountTransaction>>chunk(1000)
+                .reader(accountDBReader())
+                .processor(accountTransactionProcessor)
+                .writer(accountTransactionDBWriter)
                 .build();
     }
 
@@ -86,6 +109,15 @@ public class AccountFromCSVToDataBase {
         SimpleAsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor();
         taskExecutor.setConcurrencyLimit(1000);
         return taskExecutor;
+    }
+
+    @Bean
+    public ItemStreamReader<Account> accountDBReader() {
+        JdbcCursorItemReader<Account> reader = new JdbcCursorItemReader<>();
+        reader.setDataSource(dataSource);
+        reader.setSql("select * from account");
+        reader.setRowMapper(new AccountDBRowMapper());
+        return reader;
     }
 
     /*@Bean
