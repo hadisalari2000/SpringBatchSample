@@ -24,6 +24,8 @@ import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.batch.item.file.transform.FixedLengthTokenizer;
+import org.springframework.batch.item.file.transform.Range;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -113,9 +115,13 @@ public class AccountFromCSVToDataBase {
             setLineTokenizer(new DelimitedLineTokenizer() {{
                 setNames("part1", "part2", "part4");
                 setDelimiter(",");
-                /*if SetStrict() is false then reader on throw any error*/
                 setStrict(false);
             }});
+            /*setLineTokenizer(new FixedLengthTokenizer() {{
+                setNames("part1", "part2", "part4");
+                setColumns(new Range[]{new Range(1,5), new Range(6,10),new Range(10,12)});
+                setStrict(false);
+            }});*/
             setFieldSetMapper(new AccountFileRowMapper());
         }});
 
