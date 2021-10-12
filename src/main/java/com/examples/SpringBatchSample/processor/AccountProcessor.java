@@ -40,7 +40,7 @@ public class AccountProcessor implements ItemProcessor<AccountDTO, Account> {
                     .accountNumber(dto.getPart1() + "-" + dto.getPart2() + "-"
                             + (person.getId() + 10000000 )+ "-" + dto.getPart4())
                     .build();
-            System.out.println(rowCounter + "- Create PersonAccount for [" + personId + "] - [" + account.getAccountNumber() + "]");
+            //System.out.println(rowCounter + "- Create PersonAccount for [" + personId + "] - [" + account.getAccountNumber() + "]");
             executionContext.put(Constants.COUNTER, rowCounter + 1);
             return account;
         }

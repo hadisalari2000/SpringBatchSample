@@ -19,6 +19,5 @@ public class AccountDBWriter implements ItemWriter<Account> {
     @Override
     public void write(List<? extends Account> accounts) {
         accountRepo.saveAll(accounts);
-        System.out.println("inside writer " + accounts);
     }
 }

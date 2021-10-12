@@ -1,7 +1,11 @@
 package com.examples.SpringBatchSample.job;
 
+import com.examples.SpringBatchSample.config.SkipRecordCallback;
 import com.examples.SpringBatchSample.dto.AccountDTO;
 import com.examples.SpringBatchSample.listener.AccountJobListener;
+import com.examples.SpringBatchSample.listener.ProcessorAccountStepListener;
+import com.examples.SpringBatchSample.listener.ReaderAccountStepListener;
+import com.examples.SpringBatchSample.listener.WriterAccountStepListener;
 import com.examples.SpringBatchSample.model.entity.Account;
 import com.examples.SpringBatchSample.model.entity.AccountTransaction;
 import com.examples.SpringBatchSample.model.mapper.AccountDBRowMapper;
@@ -59,7 +63,7 @@ public class AccountFromCSVToDataBase {
     public Job employeeJob() throws Exception {
         return this.jobBuilderFactory.get("employeeFromCSVToDataBase")
                 .start(createAccountStep())
-                .next(createAccountTransactionStep())
+                //.next(createAccountTransactionStep())
                 .listener(accountJobListener())
                 .build();
     }
@@ -67,11 +71,14 @@ public class AccountFromCSVToDataBase {
     @Bean
     public Step createAccountStep() throws Exception {
         return this.stepBuilderFactory.get("createAccountStep")
-                .<AccountDTO, Account>chunk(10)
+                .<AccountDTO, Account>chunk(100)
                 .reader(accountReader())
                 .processor(accountProcessor)
                 .writer(accountDBWriter)
                 .faultTolerant().skipPolicy(skipPolicy())
+                .listener(readerAccountStepListener())
+                .listener(processorAccountStepListener())
+                .listener(writerAccountStepListener())
                 .taskExecutor(taskExecutor())
                 .build();
     }
@@ -98,20 +105,29 @@ public class AccountFromCSVToDataBase {
     public FlatFileItemReader<AccountDTO> accountReader() throws Exception {
         FlatFileItemReader<AccountDTO> reader = new FlatFileItemReader<>();
         reader.setResource(inputFileResource(null));
+
+        /*reader skip n row from top off file*/
+        reader.setLinesToSkip(100);
+        reader.setSkippedLinesCallback(skipRecordCallback());
         reader.setLineMapper(new DefaultLineMapper<AccountDTO>() {{
             setLineTokenizer(new DelimitedLineTokenizer() {{
                 setNames("part1", "part2", "part4");
                 setDelimiter(",");
+                /*if SetStrict() is false then reader on throw any error*/
+                setStrict(false);
             }});
             setFieldSetMapper(new AccountFileRowMapper());
         }});
+
+        /*if SetStrict() is false then reader on throw any error*/
+        reader.setStrict(false);
         return reader;
     }
 
     @Bean
     public TaskExecutor taskExecutor() {
         SimpleAsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor();
-        taskExecutor.setConcurrencyLimit(10);
+        taskExecutor.setConcurrencyLimit(100);
         return taskExecutor;
     }
 
@@ -132,6 +148,26 @@ public class AccountFromCSVToDataBase {
     @Bean
     public AccountJobListener accountJobListener(){
         return new AccountJobListener();
+    }
+
+    @Bean
+    public ReaderAccountStepListener readerAccountStepListener(){
+        return new ReaderAccountStepListener();
+    }
+
+    @Bean
+    public WriterAccountStepListener writerAccountStepListener(){
+        return new WriterAccountStepListener();
+    }
+
+    @Bean
+    public ProcessorAccountStepListener processorAccountStepListener(){
+        return new ProcessorAccountStepListener();
+    }
+
+    @Bean
+    public SkipRecordCallback skipRecordCallback(){
+        return new SkipRecordCallback();
     }
 
     /*@Bean
