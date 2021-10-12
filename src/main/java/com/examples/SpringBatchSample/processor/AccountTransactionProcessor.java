@@ -1,5 +1,6 @@
 package com.examples.SpringBatchSample.processor;
 
+import com.examples.SpringBatchSample.handler.exception.NegativeBalanceException;
 import com.examples.SpringBatchSample.model.entity.Account;
 import com.examples.SpringBatchSample.model.entity.AccountTransaction;
 import com.examples.SpringBatchSample.model.enums.TransactionType;
@@ -22,12 +23,16 @@ public class AccountTransactionProcessor implements ItemProcessor<Account, List<
     public List<AccountTransaction> process(Account account) throws Exception {
         List<AccountTransaction> list=new ArrayList<>();
         AccountTransaction accountTransaction;
-        for(int i=0;i<=499;i++){
+        for(int i=0;i<=20;i++){
             TransactionType transactionType=getRandomBoolean()? TransactionType.DEPOSIT:TransactionType.WITHDRAWAL;
             BigDecimal amount=BigDecimal.valueOf(getRandomNumber(0,990000000));
             BigDecimal lastBalance=i==0? BigDecimal.valueOf(0) :list.get(i-1).getBalance();
             BigDecimal balance=transactionType.equals(TransactionType.DEPOSIT)
                     ?lastBalance.add(amount):lastBalance.subtract(amount);
+
+            if(balance.compareTo(BigDecimal.valueOf(0))<0){
+                throw  NegativeBalanceException.getInstance(Account.class, "TransactionCode",(account.getId()+"-"+i));
+            }
 
             accountTransaction=AccountTransaction.builder()
                     .accountId(account.getId())

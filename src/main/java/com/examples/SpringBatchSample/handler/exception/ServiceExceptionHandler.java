@@ -56,6 +56,12 @@ public class ServiceExceptionHandler {
         return buildResponseEntity(apiError,HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(NegativeBalanceException.class)
+    protected ResponseEntity<Object> handleEntityNegativeBalance( NegativeBalanceException ex) {
+        ApiError apiError = new ApiError(ex.getMessage());
+        return buildResponseEntity(apiError,HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(AuthorizeException.class)
     protected ResponseEntity<Object> handleEntityAuthorize(AuthorizeException ex) {
         ApiError apiError = new ApiError(ex);

@@ -23,6 +23,5 @@ public class AccountTransactionDBWriter implements ItemWriter<List<AccountTransa
             accountTransactionRepo.saveAll(transactions);
             System.out.println("inside writer " + transactions);
         }
-
     }
 }

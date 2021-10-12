@@ -65,10 +65,11 @@ public class AccountFromCSVToDataBase {
     @Bean
     public Step createAccountStep() throws Exception {
         return this.stepBuilderFactory.get("createAccountStep")
-                .<AccountDTO, Account>chunk(500)
+                .<AccountDTO, Account>chunk(10)
                 .reader(accountReader())
                 .processor(accountProcessor)
                 .writer(accountDBWriter)
+                .faultTolerant().skipPolicy(skipPolicy())
                 .taskExecutor(taskExecutor())
                 .build();
     }
@@ -76,10 +77,11 @@ public class AccountFromCSVToDataBase {
     @Bean
     public Step createAccountTransactionStep() throws Exception {
         return this.stepBuilderFactory.get("createAccountTransactionStep")
-                .<Account, List<AccountTransaction>>chunk(500)
+                .<Account, List<AccountTransaction>>chunk(10)
                 .reader(accountDBReader())
                 .processor(accountTransactionProcessor)
                 .writer(accountTransactionDBWriter)
+                .faultTolerant().skipPolicy(skipPolicy())
                 .build();
     }
 
@@ -107,7 +109,7 @@ public class AccountFromCSVToDataBase {
     @Bean
     public TaskExecutor taskExecutor() {
         SimpleAsyncTaskExecutor taskExecutor = new SimpleAsyncTaskExecutor();
-        taskExecutor.setConcurrencyLimit(500);
+        taskExecutor.setConcurrencyLimit(10);
         return taskExecutor;
     }
 
@@ -118,6 +120,11 @@ public class AccountFromCSVToDataBase {
         reader.setSql("select * from account");
         reader.setRowMapper(new AccountDBRowMapper());
         return reader;
+    }
+
+    @Bean
+    public JobSkipPolicy skipPolicy(){
+        return new JobSkipPolicy();
     }
 
     /*@Bean
