@@ -1,6 +1,7 @@
 package com.examples.SpringBatchSample.job;
 
 import com.examples.SpringBatchSample.dto.AccountDTO;
+import com.examples.SpringBatchSample.listener.AccountJobListener;
 import com.examples.SpringBatchSample.model.entity.Account;
 import com.examples.SpringBatchSample.model.entity.AccountTransaction;
 import com.examples.SpringBatchSample.model.mapper.AccountDBRowMapper;
@@ -59,6 +60,7 @@ public class AccountFromCSVToDataBase {
         return this.jobBuilderFactory.get("employeeFromCSVToDataBase")
                 .start(createAccountStep())
                 .next(createAccountTransactionStep())
+                .listener(accountJobListener())
                 .build();
     }
 
@@ -125,6 +127,11 @@ public class AccountFromCSVToDataBase {
     @Bean
     public JobSkipPolicy skipPolicy(){
         return new JobSkipPolicy();
+    }
+
+    @Bean
+    public AccountJobListener accountJobListener(){
+        return new AccountJobListener();
     }
 
     /*@Bean

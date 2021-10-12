@@ -23,16 +23,16 @@ public class AccountTransactionProcessor implements ItemProcessor<Account, List<
     public List<AccountTransaction> process(Account account) throws Exception {
         List<AccountTransaction> list=new ArrayList<>();
         AccountTransaction accountTransaction;
-        for(int i=0;i<=20;i++){
+        for(int i=0;i<=19;i++){
             TransactionType transactionType=getRandomBoolean()? TransactionType.DEPOSIT:TransactionType.WITHDRAWAL;
-            BigDecimal amount=BigDecimal.valueOf(getRandomNumber(0,990000000));
+            BigDecimal amount=BigDecimal.valueOf(getRandomNumber(10000,10000000));
             BigDecimal lastBalance=i==0? BigDecimal.valueOf(0) :list.get(i-1).getBalance();
             BigDecimal balance=transactionType.equals(TransactionType.DEPOSIT)
                     ?lastBalance.add(amount):lastBalance.subtract(amount);
 
-            if(balance.compareTo(BigDecimal.valueOf(0))<0){
+            /*if(balance.compareTo(BigDecimal.valueOf(0))<0){
                 throw  NegativeBalanceException.getInstance(Account.class, "TransactionCode",(account.getId()+"-"+i));
-            }
+            }*/
 
             accountTransaction=AccountTransaction.builder()
                     .accountId(account.getId())
