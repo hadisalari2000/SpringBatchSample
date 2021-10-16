@@ -1,6 +1,6 @@
 package com.examples.SpringBatchSample.listener;
 
-import com.examples.SpringBatchSample.dto.AccountDTO;
+import com.examples.SpringBatchSample.model.dto.AccountDTO;
 import com.examples.SpringBatchSample.model.entity.Account;
 import org.springframework.batch.core.ItemProcessListener;
 

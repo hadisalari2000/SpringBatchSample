@@ -1,12 +1,16 @@
-/*
 package com.examples.SpringBatchSample.job;
 
-import com.examples.SpringBatchSample.dto.EmployeeDTO;
+import com.examples.SpringBatchSample.model.dto.EmployeeDTO;
 import com.examples.SpringBatchSample.model.mapper.EmployeeDBRowMapper;
 import com.examples.SpringBatchSample.model.mapper.EmployeeFileRowMapper;
 import com.examples.SpringBatchSample.model.entity.Employee;
 import com.examples.SpringBatchSample.processor.EmployeeDTOProcessor;
 import com.examples.SpringBatchSample.processor.EmployeeProcessorV2;
+import com.examples.SpringBatchSample.tasklet.AccountCleanupTasklet;
+import com.examples.SpringBatchSample.tasklet.AccountTransactionCleanupTasklet;
+import com.examples.SpringBatchSample.tasklet.EmployeeCleanupTasklet;
+import com.examples.SpringBatchSample.tasklet.EmployeeSummeryTargetTasklet;
+import com.examples.SpringBatchSample.utils.Constants;
 import com.examples.SpringBatchSample.writer.EmailSenderWriter;
 import com.examples.SpringBatchSample.writer.EmployeeDBWriter;
 import org.springframework.batch.core.Job;
@@ -37,7 +41,6 @@ import org.springframework.core.task.TaskExecutor;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Configuration
@@ -52,7 +55,12 @@ public class MultipleStepsJob {
     private final EmailSenderWriter emailSenderWriter;
     private final ExecutionContext executionContext;
 
-    public MultipleStepsJob(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, EmployeeProcessorV2 employeeProcessorV2, EmployeeDTOProcessor employeeDTOProcessor, DataSource dataSource, EmployeeDBWriter employeeDBWriter, EmailSenderWriter emailSenderWriter, ExecutionContext executionContext) {
+    private final AccountCleanupTasklet accountCleanupTasklet;
+    private final EmployeeCleanupTasklet employeeCleanupTasklet;
+    private final AccountTransactionCleanupTasklet accountTransactionCleanupTasklet;
+    private final EmployeeSummeryTargetTasklet employeeSummeryTargetTasklet;
+
+    public MultipleStepsJob(JobBuilderFactory jobBuilderFactory, StepBuilderFactory stepBuilderFactory, EmployeeProcessorV2 employeeProcessorV2, EmployeeDTOProcessor employeeDTOProcessor, DataSource dataSource, EmployeeDBWriter employeeDBWriter, EmailSenderWriter emailSenderWriter, ExecutionContext executionContext, AccountCleanupTasklet accountCleanupTasklet, EmployeeCleanupTasklet employeeCleanupTasklet, AccountTransactionCleanupTasklet accountTransactionCleanupTasklet, EmployeeSummeryTargetTasklet employeeSummeryTargetTasklet) {
         this.jobBuilderFactory = jobBuilderFactory;
         this.stepBuilderFactory = stepBuilderFactory;
         this.employeeProcessorV2 = employeeProcessorV2;
@@ -61,9 +69,19 @@ public class MultipleStepsJob {
         this.employeeDBWriter = employeeDBWriter;
         this.emailSenderWriter = emailSenderWriter;
         this.executionContext = executionContext;
+        this.accountCleanupTasklet = accountCleanupTasklet;
+        this.employeeCleanupTasklet = employeeCleanupTasklet;
+        this.accountTransactionCleanupTasklet = accountTransactionCleanupTasklet;
+        this.employeeSummeryTargetTasklet = employeeSummeryTargetTasklet;
     }
 
-    private Resource outputResource = new FileSystemResource(String.format("output/employee_output_%s.csv", new Date().getTime()));
+
+    @Bean
+    @StepScope
+    Resource getOutputResource(){
+       return new FileSystemResource(String.format("output/employee_output_%s.csv",
+                executionContext.get(Constants.FILE_NAME_PART)));
+    }
 
     @Bean
     @StepScope
@@ -71,28 +89,57 @@ public class MultipleStepsJob {
         return new ClassPathResource(fileName);
     }
 
-    */
-/********************** Read context Variable by Execution Context ********************************//*
+    /********************** Read context Variable by Execution Context *******************************
 
-    */
-/*@Bean
-    @StepScope
-    Resource newInputResource() {
-        return new ClassPathResource(
-                Objects.requireNonNull(executionContext.get(Constants.FILE_NAME_CONTEXT_KEY)).toString()
-        );
-    }*//*
+    @Bean
+        @StepScope
+        Resource newInputResource() {
+            return new ClassPathResource(
+                    Objects.requireNonNull(executionContext.get(Constants.FILE_NAME_CONTEXT_KEY)).toString()
+            );
+        }
 
-    */
-/*************************************************************************************************//*
+    ************************************************************************************************/
 
 
     @Qualifier(value = "multipleStepJob")
     @Bean
     public Job multipleStepJob() throws Exception{
         return this.jobBuilderFactory.get("multipleStepJob")
-                .start(inputDataStep())
+                .start(accountTransactionCleanup())
+                .next(accountCleanup())
+                .next(employeeCleanup())
+                .next(inputDataStep())
                 .next(outputDataStep())
+                .next(employeeGroupByTasklet())
+                .build();
+    }
+
+    @Bean
+    public Step accountTransactionCleanup() {
+        return this.stepBuilderFactory.get("accountTransactionCleanup")
+                .tasklet(accountTransactionCleanupTasklet)
+                .build();
+    }
+
+    @Bean
+    public Step accountCleanup() {
+        return this.stepBuilderFactory.get("accountCleanup")
+                .tasklet(accountCleanupTasklet)
+                .build();
+    }
+
+    @Bean
+    public Step employeeCleanup() {
+        return this.stepBuilderFactory.get("employeeCleanup")
+                .tasklet(employeeCleanupTasklet)
+                .build();
+    }
+
+    @Bean
+    public Step employeeGroupByTasklet() {
+        return this.stepBuilderFactory.get("employeeGroupByTasklet")
+                .tasklet(employeeSummeryTargetTasklet)
                 .build();
     }
 
@@ -151,7 +198,7 @@ public class MultipleStepsJob {
     @Bean
     public ItemWriter<EmployeeDTO> employeeFileWriter() {
         FlatFileItemWriter writer = new FlatFileItemWriter();
-        writer.setResource(outputResource);
+        writer.setResource(getOutputResource());
         writer.setLineAggregator(new DelimitedLineAggregator<EmployeeDTO>() {
             {
                 setFieldExtractor(new BeanWrapperFieldExtractor<EmployeeDTO>() {
@@ -159,7 +206,7 @@ public class MultipleStepsJob {
                         setNames(new String[]{"employeeId", "firstName", "lastName", "email", "age"});
                     }
                 });
-                setDelimiter(" || ");
+                setDelimiter(",");
             }
         });
         writer.setShouldDeleteIfExists(true);
@@ -173,11 +220,9 @@ public class MultipleStepsJob {
         return executor;
     }
 
-    */
-/*@Bean
+@Bean
     public JobSkipPolicy skipPolicy(){
         return new JobSkipPolicy();
-    }*//*
+    }
 
 }
-*/

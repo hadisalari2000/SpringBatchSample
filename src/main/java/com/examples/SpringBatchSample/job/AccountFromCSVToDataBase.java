@@ -1,7 +1,8 @@
+/*
 package com.examples.SpringBatchSample.job;
 
 import com.examples.SpringBatchSample.config.SkipRecordCallback;
-import com.examples.SpringBatchSample.dto.AccountDTO;
+import com.examples.SpringBatchSample.model.dto.AccountDTO;
 import com.examples.SpringBatchSample.listener.AccountJobListener;
 import com.examples.SpringBatchSample.listener.ProcessorAccountStepListener;
 import com.examples.SpringBatchSample.listener.ReaderAccountStepListener;
@@ -24,8 +25,6 @@ import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
-import org.springframework.batch.item.file.transform.FixedLengthTokenizer;
-import org.springframework.batch.item.file.transform.Range;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -108,7 +107,9 @@ public class AccountFromCSVToDataBase {
         FlatFileItemReader<AccountDTO> reader = new FlatFileItemReader<>();
         reader.setResource(inputFileResource(null));
 
-        /*reader skip n row from top off file*/
+        */
+/*reader skip n row from top off file*//*
+
         reader.setLinesToSkip(100);
         reader.setSkippedLinesCallback(skipRecordCallback());
         reader.setLineMapper(new DefaultLineMapper<AccountDTO>() {{
@@ -117,15 +118,19 @@ public class AccountFromCSVToDataBase {
                 setDelimiter(",");
                 setStrict(false);
             }});
-            /*setLineTokenizer(new FixedLengthTokenizer() {{
+            */
+/*setLineTokenizer(new FixedLengthTokenizer() {{
                 setNames("part1", "part2", "part4");
                 setColumns(new Range[]{new Range(1,5), new Range(6,10),new Range(10,12)});
                 setStrict(false);
-            }});*/
+            }});*//*
+
             setFieldSetMapper(new AccountFileRowMapper());
         }});
 
-        /*if SetStrict() is false then reader on throw any error*/
+        */
+/*if SetStrict() is false then reader no throw any error*//*
+
         reader.setStrict(false);
         return reader;
     }
@@ -176,7 +181,8 @@ public class AccountFromCSVToDataBase {
         return new SkipRecordCallback();
     }
 
-    /*@Bean
+    */
+/*@Bean
     public JdbcBatchItemWriter<Employee> employeeDBWriterDefault() {
         JdbcBatchItemWriter<Employee> itemWriter = new JdbcBatchItemWriter<Employee>();
         itemWriter.setDataSource(dataSource);
@@ -185,7 +191,9 @@ public class AccountFromCSVToDataBase {
         itemWriter.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<Employee>());
         return itemWriter;
     }
-    */
+    *//*
+
 }
 
 
+*/

@@ -1,18 +1,19 @@
 package com.examples.SpringBatchSample.model.mapper;
 
-import com.examples.SpringBatchSample.model.dto.EmployeeDTO;
+import com.examples.SpringBatchSample.model.dto.StudentDTO;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.FieldSet;
+import org.springframework.stereotype.Component;
 
-public class EmployeeFileRowMapper implements FieldSetMapper<EmployeeDTO> {
+@Component
+public class StudentFileRowMapper implements FieldSetMapper<StudentDTO> {
 
     @Override
-    public EmployeeDTO mapFieldSet(FieldSet fieldSet) {
-        return EmployeeDTO.builder()
-                .employeeId(fieldSet.readString("employeeId"))
+    public StudentDTO mapFieldSet(FieldSet fieldSet) {
+        return StudentDTO.builder()
+                .mail(fieldSet.readString("mail"))
                 .firstName(fieldSet.readString("firstName"))
                 .lastName(fieldSet.readString("lastName"))
-                .email(fieldSet.readString("email"))
                 .age(fieldSet.readInt("age"))
                 .build();
     }

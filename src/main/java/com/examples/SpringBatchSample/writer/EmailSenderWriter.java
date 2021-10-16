@@ -1,6 +1,6 @@
 package com.examples.SpringBatchSample.writer;
 
-import com.examples.SpringBatchSample.dto.EmployeeDTO;
+import com.examples.SpringBatchSample.model.dto.EmployeeDTO;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;
 

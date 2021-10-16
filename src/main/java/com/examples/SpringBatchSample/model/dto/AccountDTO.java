@@ -1,4 +1,4 @@
-package com.examples.SpringBatchSample.dto;
+package com.examples.SpringBatchSample.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

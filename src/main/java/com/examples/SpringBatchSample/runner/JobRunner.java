@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Random;
 
 @Component
 public class JobRunner {
@@ -32,9 +33,9 @@ public class JobRunner {
     @Async
     public void runBatchJob() {
         JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
-        jobParametersBuilder.addString(Constants.FILE_NAME_CONTEXT_KEY, "sampleData/accounts.csv");
+        jobParametersBuilder.addString(Constants.FILE_NAME_CONTEXT_KEY, "sampleData/employees.csv");
         executionContext.put(Constants.FILE_NAME_CONTEXT_KEY, "sampleData/employees.csv");
-        executionContext.putLong(Constants.COUNTER, 1);
+        executionContext.putInt(Constants.FILE_NAME_PART,(new Random().ints(1, 1000000).findFirst().getAsInt()));
         jobParametersBuilder.addDate("date", new Date(), true);
         runJob(job, jobParametersBuilder.toJobParameters());
     }

@@ -1,9 +1,7 @@
 package com.examples.SpringBatchSample.processor;
 
-import com.examples.SpringBatchSample.dto.AccountDTO;
-import com.examples.SpringBatchSample.dto.EmployeeDTO;
+import com.examples.SpringBatchSample.model.dto.AccountDTO;
 import com.examples.SpringBatchSample.model.entity.Account;
-import com.examples.SpringBatchSample.model.entity.Employee;
 import com.examples.SpringBatchSample.model.entity.Person;
 import com.examples.SpringBatchSample.repo.PersonRepo;
 import com.examples.SpringBatchSample.utils.Constants;

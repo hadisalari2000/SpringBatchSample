@@ -1,7 +1,7 @@
 /*
 package com.examples.SpringBatchSample.job;
 
-import com.examples.SpringBatchSample.dto.EmployeeDTO;
+import com.examples.SpringBatchSample.model.dto.EmployeeDTO;
 import com.examples.SpringBatchSample.model.entity.Employee;
 import com.examples.SpringBatchSample.processor.EmployeeProcessor;
 import com.examples.SpringBatchSample.writer.EmployeeDBWriter;
