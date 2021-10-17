@@ -1,3 +1,4 @@
+/*
 package com.examples.SpringBatchSample.job;
 
 import com.examples.SpringBatchSample.model.dto.EmployeeDTO;
@@ -89,7 +90,8 @@ public class MultipleStepsJob {
         return new ClassPathResource(fileName);
     }
 
-    /********************** Read context Variable by Execution Context *******************************
+    */
+/********************** Read context Variable by Execution Context *******************************
 
     @Bean
         @StepScope
@@ -99,7 +101,8 @@ public class MultipleStepsJob {
             );
         }
 
-    ************************************************************************************************/
+    ************************************************************************************************//*
+
 
 
     @Qualifier(value = "multipleStepJob")
@@ -226,3 +229,4 @@ public class MultipleStepsJob {
     }
 
 }
+*/

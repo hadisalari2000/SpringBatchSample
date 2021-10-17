@@ -1,3 +1,4 @@
+/*
 package com.examples.SpringBatchSample.runner;
 
 import com.examples.SpringBatchSample.utils.Constants;
@@ -54,3 +55,4 @@ public class JobRunner {
         }
     }
 }
+*/
